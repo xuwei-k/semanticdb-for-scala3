@@ -1,6 +1,3 @@
-ThisBuild / scalafixScalaBinaryVersion :=
-  CrossVersion.binaryScalaVersion(scalaVersion.value)
-
 ThisBuild / scalaVersion := "2.13.16"
 
 commands += Command.command("ci") { s =>

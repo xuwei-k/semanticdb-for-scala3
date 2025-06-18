@@ -24,7 +24,7 @@ class AdjustForScala3 extends SyntacticRule("AdjustForScala3") {
       // Replace `@transient` annotation with `@sharable`
       // https://github.com/scalameta/metals/discussions/2593#discussioncomment-529949
       // https://github.com/scalapb/ScalaPB/blob/1159f1738efcb4cb0a620a4e6f14f6489710b5d1/compiler-plugin/src/main/scala/scalapb/compiler/ProtobufGenerator.scala#L544
-      case annot @ Mod.Annot(Init(Type.Name(name), _, _))
+      case annot @ Mod.Annot(Init.After_4_6_0(Type.Name(name), _, _))
           if name == "transient" =>
         Patch.addRight(annot, " @sharable")
 
@@ -151,7 +151,7 @@ class AdjustForScala3 extends SyntacticRule("AdjustForScala3") {
           init.tpe match {
             case s: Type.Select =>
               extendsReplaces.get(s.name.value)
-            case app @ Type.Apply(Type.Select(_, name), _)
+            case app @ Type.Apply.After_4_6_0(Type.Select(_, name), _)
                 if name.value == "GeneratedMessageCompanion" =>
               Some(
                 app.syntax.replaceAll(
@@ -191,8 +191,8 @@ class AdjustForScala3 extends SyntacticRule("AdjustForScala3") {
           name.value == "scalapb" || loop(qual)
         case Term.Select(qual, name) =>
           name.value == "scalapb" || loop(qual)
-        case Type.Apply(tpe, args) => loop(tpe) || args.exists(loop)
-        case _                     => false
+        case Type.Apply.After_4_6_0(tpe, args) => loop(tpe) || args.exists(loop)
+        case _                                 => false
       }
     }
     loop(tpe)
